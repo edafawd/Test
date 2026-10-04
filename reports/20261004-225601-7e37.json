@@ -1,0 +1,24 @@
+{
+ "id": "20261004-225601-7e37",
+ "timestamp": "2026-10-04T15:56:01-07:00",
+ "species": "asian_longhorned_beetle",
+ "name": "Asian Longhorned Beetle",
+ "confidence": 53.8,
+ "top3": [
+  {
+   "species": "asian_longhorned_beetle",
+   "confidence": 53.8
+  },
+  {
+   "species": "mosquito",
+   "confidence": 16.6
+  },
+  {
+   "species": "thrips",
+   "confidence": 7.92
+  }
+ ],
+ "photo": "20261004-225601-7e37.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.0"
+}
