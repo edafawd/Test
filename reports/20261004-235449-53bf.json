@@ -1,0 +1,24 @@
+{
+ "id": "20261004-235449-53bf",
+ "timestamp": "2026-10-04T16:54:49-07:00",
+ "species": "emerald_ash_borer",
+ "name": "Emerald Ash Borer",
+ "confidence": 99.95,
+ "top3": [
+  {
+   "species": "emerald_ash_borer",
+   "confidence": 99.95
+  },
+  {
+   "species": "army_worm",
+   "confidence": 0.03
+  },
+  {
+   "species": "click_beetle",
+   "confidence": 0.01
+  }
+ ],
+ "photo": "20261004-235449-53bf.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.0"
+}
