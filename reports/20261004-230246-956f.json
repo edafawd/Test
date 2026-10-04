@@ -1,0 +1,24 @@
+{
+ "id": "20261004-230246-956f",
+ "timestamp": "2026-10-04T16:02:46-07:00",
+ "species": "japanese_beetle",
+ "name": "Japanese Beetle",
+ "confidence": 99.92,
+ "top3": [
+  {
+   "species": "japanese_beetle",
+   "confidence": 99.92
+  },
+  {
+   "species": "dung_beetle",
+   "confidence": 0.08
+  },
+  {
+   "species": "green_june_beetle",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261004-230246-956f.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.0"
+}
