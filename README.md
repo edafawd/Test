@@ -50,8 +50,8 @@ per find) live in `reports/` of a separate private repo that only the relay can 
   Everyone then has to use the new link and password.
 - The invasive species list is `INVASIVE` in `index.html` **and** in `relay/worker.js`. Change
   both, then paste `worker.js` into Cloudflare again (**Edit code → Deploy**).
-- `SITE_CSS` at the top of `relay/worker.js` points at this site's stylesheet. Update it if the
-  site moves.
+- The reports page has its own copy of the site's styles inside `relay/worker.js`, so it keeps
+  working if the site moves or is renamed.
 - To use a newer model, replace `model/insect_model.onnx` and update `CLASS_NAMES` in
   `index.html`. `convert_to_onnx.py` in the app folder converts a `.pth` and writes its class
   list to `assets/models/models.json`.
