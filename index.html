@@ -18,9 +18,13 @@
   </header>
 
   <section id="tray" class="tray" aria-label="Add photos">
-    <p>Drop insect photos here, or choose photos or a whole folder. Photos are identified on this device. When a photo shows an invasive species, a report with a reduced copy of the photo is sent to the Pyinsect team.</p>
+    <p>Take a photo of an insect, drop photos here, or choose photos or a whole folder. Photos are identified on this device. When a photo shows an invasive species, a report with a reduced copy of the photo is sent to the Pyinsect team.</p>
     <div class="actions">
-      <button id="pickPhotos" class="btn primary" type="button" disabled>
+      <button id="openCamera" class="btn primary" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        Take photo
+      </button>
+      <button id="pickPhotos" class="btn" type="button" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
         Select photos
       </button>
@@ -31,6 +35,21 @@
     </div>
     <input id="photoInput" type="file" accept=".jpg,.jpeg,.png,.bmp,.webp,image/*" multiple>
     <input id="folderInput" type="file" webkitdirectory multiple>
+    <input id="captureInput" type="file" accept="image/*" capture="environment">
+  </section>
+
+  <section id="camera" class="camera" aria-label="Camera" hidden>
+    <div class="viewfinder">
+      <video id="cameraVideo" playsinline muted autoplay></video>
+      <div id="cameraFlash" class="flash"></div>
+      <p id="cameraMsg" class="camera-msg" hidden></p>
+    </div>
+    <div class="camera-bar">
+      <button id="closeCamera" class="btn" type="button">Close</button>
+      <button id="shutter" class="shutter" type="button" aria-label="Take photo" disabled></button>
+      <button id="switchCamera" class="btn" type="button" hidden>Switch camera</button>
+      <button id="useCameraApp" class="btn" type="button" hidden>Use camera app</button>
+    </div>
   </section>
 
   <details class="reporting" id="reporting">
@@ -133,7 +152,7 @@ async function loadModel() {
     setStatus("Starting model…", "busy");
     session = await ort.InferenceSession.create(buf, { executionProviders: ["wasm"] });
     setStatus(readyText(), "ready");
-    $("pickPhotos").disabled = false; $("pickFolder").disabled = false;
+    $("pickPhotos").disabled = false; $("pickFolder").disabled = false; $("openCamera").disabled = false;
   } catch (e) {
     console.error(e);
     setStatus(`Model failed to load: ${e.message}`, "error");
@@ -363,6 +382,94 @@ function handleFiles(list) {
   if (!files.length) { setStatus("No supported images found (jpg, png, bmp, webp).", "error"); return; }
   files.forEach(classify);
 }
+
+// ---------- camera ----------
+// Live viewfinder in the page (getUserMedia). If the browser can't or won't share the camera,
+// the phone's own camera app is offered instead (file input with capture).
+let stream = null, facing = "environment";
+
+function cameraMessage(text) {
+  $("cameraMsg").textContent = text || "";
+  $("cameraMsg").hidden = !text;
+}
+
+async function startCamera() {
+  stopStream();
+  $("shutter").disabled = true;
+  cameraMessage("Starting camera…");
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+    });
+    const video = $("cameraVideo");
+    video.srcObject = stream;
+    await video.play();
+    video.classList.toggle("mirror", facing === "user");
+    cameraMessage("");
+    $("shutter").disabled = false;
+    $("useCameraApp").hidden = true;
+    const cams = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput");
+    $("switchCamera").hidden = cams.length < 2;
+  } catch (e) {
+    console.error(e);
+    stopStream();
+    cameraMessage(e && e.name === "NotAllowedError"
+      ? "Camera access was blocked. Allow the camera for this site in your browser settings, or use your camera app instead."
+      : e && e.name === "NotFoundError" ? "No camera found on this device."
+      : "Couldn't start the camera here. You can use your camera app instead.");
+    $("useCameraApp").hidden = false;
+    $("switchCamera").hidden = true;
+  }
+}
+
+function stopStream() {
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null;
+  $("cameraVideo").srcObject = null;
+}
+
+function openCamera() {
+  if (!navigator.mediaDevices?.getUserMedia) { $("captureInput").click(); return; }   // old browsers
+  $("camera").hidden = false;
+  $("camera").scrollIntoView({ behavior: "smooth", block: "start" });
+  startCamera();
+}
+
+function closeCamera() {
+  stopStream();
+  $("camera").hidden = true;
+}
+
+// Grabs the current frame at the camera's full resolution as a JPEG file and identifies it
+function takePhoto() {
+  const video = $("cameraVideo");
+  if (!stream || !video.videoWidth) return;
+  const c = document.createElement("canvas");
+  c.width = video.videoWidth; c.height = video.videoHeight;
+  c.getContext("2d").drawImage(video, 0, 0);
+  $("cameraFlash").classList.remove("go"); void $("cameraFlash").offsetWidth; $("cameraFlash").classList.add("go");
+  c.toBlob(blob => {
+    if (!blob) return;
+    const d = new Date(), pad = n => String(n).padStart(2, "0");
+    const name = `camera-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.jpg`;
+    closeCamera();
+    classify(new File([blob], name, { type: "image/jpeg" }));
+    $("cards").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, "image/jpeg", 0.92);
+}
+
+$("openCamera").onclick = openCamera;
+$("closeCamera").onclick = closeCamera;
+$("shutter").onclick = takePhoto;
+$("switchCamera").onclick = () => { facing = facing === "environment" ? "user" : "environment"; startCamera(); };
+$("useCameraApp").onclick = () => { closeCamera(); $("captureInput").click(); };
+$("captureInput").onchange = e => { handleFiles(e.target.files); e.target.value = ""; };
+// Don't keep the camera running in a background tab
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) stopStream();
+  else if (!$("camera").hidden && !stream) startCamera();
+});
 
 // ---------- wiring ----------
 $("pickPhotos").onclick = () => $("photoInput").click();
