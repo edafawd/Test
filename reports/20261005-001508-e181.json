@@ -1,0 +1,24 @@
+{
+ "id": "20261005-001508-e181",
+ "timestamp": "2026-10-04T17:15:08-07:00",
+ "species": "asian_longhorned_beetle",
+ "name": "Asian Longhorned Beetle",
+ "confidence": 34.56,
+ "top3": [
+  {
+   "species": "asian_longhorned_beetle",
+   "confidence": 34.56
+  },
+  {
+   "species": "grasshopper",
+   "confidence": 10.9
+  },
+  {
+   "species": "soldier_fly",
+   "confidence": 2.98
+  }
+ ],
+ "photo": "20261005-001508-e181.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.0"
+}
