@@ -1,0 +1,28 @@
+{
+ "id": "20261008-020115-4ead",
+ "timestamp": "2026-10-07T19:01:15-07:00",
+ "species": "popillia_japonica",
+ "name": "Japanese Beetle",
+ "scientific": "Popillia japonica",
+ "confidence": 93.33,
+ "top3": [
+  {
+   "species": "popillia_japonica",
+   "name": "Japanese Beetle",
+   "confidence": 93.33
+  },
+  {
+   "species": "phanaeus_vindex",
+   "name": "Rainbow Scarab",
+   "confidence": 6.63
+  },
+  {
+   "species": "cotinis_mutabilis",
+   "name": "Figeater Beetle",
+   "confidence": 0.01
+  }
+ ],
+ "photo": "20261008-020115-4ead.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
