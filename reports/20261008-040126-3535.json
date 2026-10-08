@@ -1,0 +1,28 @@
+{
+ "id": "20261008-040126-3535",
+ "timestamp": "2026-10-07T21:01:26-07:00",
+ "species": "lycorma_delicatula",
+ "name": "Spotted Lanternfly",
+ "scientific": "Lycorma delicatula",
+ "confidence": 99.98,
+ "top3": [
+  {
+   "species": "lycorma_delicatula",
+   "name": "Spotted Lanternfly",
+   "confidence": 99.98
+  },
+  {
+   "species": "zeuzera_pyrina",
+   "name": "Leopard Moth",
+   "confidence": 0.02
+  },
+  {
+   "species": "dynastes_tityus",
+   "name": "Eastern Hercules Beetle",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261008-040126-3535.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
