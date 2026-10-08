@@ -1,0 +1,28 @@
+{
+ "id": "20261008-200817-6c99",
+ "timestamp": "2026-10-08T13:08:17-07:00",
+ "species": "spotted_lanternfly",
+ "name": "Spotted Lanternfly",
+ "scientific": "Spotted Lanternfly",
+ "confidence": 100,
+ "top3": [
+  {
+   "species": "spotted_lanternfly",
+   "name": "Spotted Lanternfly",
+   "confidence": 100
+  },
+  {
+   "species": "powderpost_beetle",
+   "name": "Powderpost Beetle",
+   "confidence": 0
+  },
+  {
+   "species": "squash_bug",
+   "name": "Squash Bug",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261008-200817-6c99.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
