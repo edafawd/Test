@@ -1,0 +1,50 @@
+// Pyinsect 2.7: model file, how photos are prepared for it, its classes (in output order) and the
+// species that get reported. Keep `invasive` in sync with INVASIVE in relay/worker.js.
+window.PYINSECT_MODEL = {
+  name: "Pyinsect 2.7",
+  url: new URL("../../model/insect_model_2.7.onnx", document.currentScript.src).href,
+  size: 16809298,
+  resize: "crop",
+  scientific: false,   // class names are scientific names (show common + scientific)
+  classes: [
+    "emerald_ash_borer_damage", "american_cockroach", "american_lady", "anise_swallowtail",
+    "aphid", "argentine_ant", "army_worm", "asian_giant_hornet", "asian_lady_beetle",
+    "asian_longhorned_beetle", "backswimmer", "bagworm", "bald_faced_hornet", "bark_beetle",
+    "bean_leaf_beetle", "bed_bug", "bee_fly", "black_ant", "black_swallowtail",
+    "blister_beetle", "blow_fly", "booklouse", "boxelder_bug", "brown_banded_cockroach",
+    "brown_lacewing", "brown_marmorated_stink_bug", "bumblebee", "cabbage_white",
+    "caddisfly", "carpenter_ant", "carpenter_bee", "carpet_beetle", "carrion_beetle",
+    "cecropia_moth", "cereal_leaf_beetle", "cicada", "cicada_killer", "clearwing_moth",
+    "click_beetle", "clouded_sulphur", "cockroach", "codling_moth",
+    "colorado_potato_beetle", "comma_butterfly", "common_ringlet", "convergent_lady_beetle",
+    "corn_earworm", "crane_fly", "cricket", "cucumber_beetle", "cutworm", "damsel_bug",
+    "damselfly", "darkling_beetle", "deer_fly", "diamondback_moth", "diving_beetle",
+    "dobsonfly", "douglas_fir_tussock_moth", "dragonfly", "dung_beetle", "earwig",
+    "elm_leaf_beetle", "emerald_ash_borer", "european_paper_wasp", "fall_webworm",
+    "fire_ant", "firebrat", "firefly", "fishfly", "flea_beetle", "flesh_fly",
+    "forest_tent_caterpillar", "formosan_termite", "german_cockroach", "giant_swallowtail",
+    "giant_water_bug", "grasshopper", "green_june_beetle", "green_lacewing",
+    "ground_beetle", "hairstreak", "hangingfly", "harvester_ant", "honey_bee", "hornet",
+    "horse_fly", "house_fly", "hoverfly", "hummingbird_moth", "imperial_moth",
+    "japanese_beetle", "jerusalem_cricket", "katydid", "lace_bug", "lacewing", "ladybug",
+    "leafcutter_bee", "leafhopper", "locust_borer", "luna_moth", "mason_bee", "mayfly",
+    "mealworm", "mealybug", "mexican_bean_beetle", "milkweed_bug", "mole_cricket",
+    "monarch_butterfly", "mosquito", "mourning_cloak", "mud_dauber", "oriental_beetle",
+    "oriental_cockroach", "painted_lady", "paper_wasp", "pavement_ant", "periodical_cicada",
+    "pipevine_swallowtail", "polyphemus_moth", "powderpost_beetle", "praying_mantis",
+    "red_admiral", "rhinoceros_beetle", "rice_weevil", "robber_fly", "rose_chafer",
+    "scale_insect", "scorpionfly", "silver_spotted_skipper", "silverfish", "soldier_beetle",
+    "soldier_fly", "spongy_moth", "spotted_lanternfly", "springtail", "squash_bug",
+    "stag_beetle", "stick_insect", "stink_bug", "stonefly", "swallowtail_butterfly",
+    "sweat_bee", "tachinid_fly", "termite", "thrips", "tiger_beetle", "tiger_moth",
+    "tomato_hornworm", "underwing_moth", "velvet_ant", "water_strider", "weevil",
+    "western_tiger_swallowtail"
+  ],
+  invasive: [
+    "ambrosia_beetle", "argentine_ant", "asian_giant_hornet", "asian_lady_beetle",
+    "asian_longhorned_beetle", "balsam_woolly_adelgid", "brown_marmorated_stink_bug",
+    "cabbage_white", "elm_leaf_beetle", "emerald_ash_borer", "european_paper_wasp",
+    "fire_ant", "formosan_termite", "japanese_beetle", "oriental_beetle", "rose_chafer",
+    "spongy_moth", "spotted_lanternfly"
+  ],
+};
