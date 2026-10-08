@@ -1,0 +1,28 @@
+{
+ "id": "20261008-200817-4ccc",
+ "timestamp": "2026-10-08T13:08:17-07:00",
+ "species": "japanese_beetle",
+ "name": "Japanese Beetle",
+ "scientific": "Japanese Beetle",
+ "confidence": 100,
+ "top3": [
+  {
+   "species": "japanese_beetle",
+   "name": "Japanese Beetle",
+   "confidence": 100
+  },
+  {
+   "species": "dung_beetle",
+   "name": "Dung Beetle",
+   "confidence": 0
+  },
+  {
+   "species": "blow_fly",
+   "name": "Blow Fly",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261008-200817-4ccc.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
