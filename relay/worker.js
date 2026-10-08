@@ -68,7 +68,7 @@ async function submit(request, env) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
   if (request.method === "GET") {
     // Says whether the reports page is set up, never what its address or password is
-    return reply(200, { ok: true, service: "pyinsect-relay", version: 3, reports_page: Boolean(viewWord(env) && env.VIEW_PASSWORD) });
+    return reply(200, { ok: true, service: "pyinsect-relay", version: 4, reports_page: Boolean(viewWord(env) && env.VIEW_PASSWORD) });
   }
   if (request.method !== "POST") return reply(405, { error: "Use POST." });
   const origin = request.headers.get("Origin");
@@ -361,6 +361,16 @@ h2 { font-family: var(--display); font-weight: 500; font-size: 19px; margin: 0; 
   .row .when { grid-column: 2; text-align: left; }
 }
 .sci { font-style: italic; font-size: 14px; color: var(--muted); margin-top: -6px; overflow-wrap: anywhere; }
+.hero img, .row { cursor: zoom-in; }
+.row:hover { background: var(--accent-soft); }
+.row:focus-visible, .hero img:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.viewer { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: rgba(8, 12, 10, .82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: zoom-out; }
+.viewer img { display: block; max-width: 100%; max-height: calc(100vh - 150px); object-fit: contain; border-radius: 10px; background: #000; }
+.viewer .caption { max-width: 820px; width: 100%; color: #eef3ef; display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; justify-content: center; text-align: center; font-size: 14px; }
+.viewer .caption strong { font-family: var(--display); font-size: 22px; color: #fff; }
+.viewer .caption em { color: #c7d2ca; }
+.viewer .caption span { font-family: var(--mono); font-size: 12px; color: #c7d2ca; }
+.viewer .close { position: absolute; top: 12px; right: 12px; color: #fff; background: rgba(255, 255, 255, .14); border-color: rgba(255, 255, 255, .3); }
 .login { display: flex; flex-direction: column; gap: 10px; max-width: 360px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .login input[type=password] { font: 15px var(--mono); padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
 .login label { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
@@ -385,6 +395,12 @@ h2 { font-family: var(--display); font-weight: 500; font-size: 19px; margin: 0; 
   <section class="ledger" id="tallySection" hidden><h2 id="tallyTitle">Species reported</h2><div class="tally" id="tally"></div></section>
   <section class="ledger" id="earlierSection" hidden><h2>Earlier reports</h2><div class="rows" id="earlier"></div></section>
   <div class="actions" id="logoutBox" hidden><button id="logout" class="btn" type="button">Log out on this device</button></div>
+</div>
+
+<div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-label="Full photo" hidden>
+  <button id="viewerClose" class="btn close" type="button">Close</button>
+  <img id="viewerImg" alt="">
+  <div id="viewerCaption" class="caption"></div>
 </div>
 
 <script>
@@ -434,6 +450,9 @@ function hero(r) {
     });
     info.append(alts);
   }
+  img.tabIndex = 0; img.title = "Show the whole photo";
+  img.onclick = function () { openViewer(r); };
+  img.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openViewer(r); } };
   card.append(img, info);
   return card;
 }
@@ -443,6 +462,9 @@ function row(r) {
   img.alt = ""; img.loading = "lazy"; photo(img, r.id);
   what.append(el("strong", null, r.name || niceName(r.species)), el("span", "muted", Number(r.confidence).toFixed(1) + "% confidence"));
   x.append(img, what, el("span", "when", when(r.timestamp).full));
+  x.tabIndex = 0; x.setAttribute("role", "button"); x.title = "Show the whole photo";
+  x.onclick = function () { openViewer(r); };
+  x.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openViewer(r); } };
   return x;
 }
 
@@ -505,6 +527,31 @@ $("login").onsubmit = function (e) {
 };
 $("logout").onclick = function () { showLogin(""); };
 document.addEventListener("visibilitychange", function () { if (!document.hidden && timer) refresh(); });
+
+// Full, uncropped photo with the report's details; click anywhere or press Esc to close
+var viewerReturn = null;
+function openViewer(r) {
+  viewerReturn = document.activeElement;
+  var img = $("viewerImg");
+  img.removeAttribute("src"); img.alt = "Photo of the reported " + (r.name || niceName(r.species));
+  photo(img, r.id);
+  var cap = $("viewerCaption"); cap.innerHTML = "";
+  cap.append(el("strong", null, r.name || niceName(r.species)));
+  if (r.scientific && r.scientific !== r.name) cap.append(el("em", null, r.scientific));
+  var w = when(r.timestamp);
+  cap.append(el("span", null, Number(r.confidence).toFixed(1) + "% · " + w.full + " · " + (r.model || "")));
+  $("viewer").hidden = false;
+  document.body.style.overflow = "hidden";
+  $("viewerClose").focus();
+}
+function closeViewer() {
+  if ($("viewer").hidden) return;
+  $("viewer").hidden = true;
+  document.body.style.overflow = "";
+  if (viewerReturn && viewerReturn.focus) viewerReturn.focus();
+}
+$("viewer").onclick = closeViewer;
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeViewer(); });
 
 if (password) start(); else showLogin("");
 </script>
