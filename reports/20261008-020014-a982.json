@@ -1,0 +1,28 @@
+{
+ "id": "20261008-020014-a982",
+ "timestamp": "2026-10-07T19:00:14-07:00",
+ "species": "agrilus_planipennis",
+ "name": "Emerald Ash Borer",
+ "scientific": "Agrilus planipennis",
+ "confidence": 44.23,
+ "top3": [
+  {
+   "species": "agrilus_planipennis",
+   "name": "Emerald Ash Borer",
+   "confidence": 44.23
+  },
+  {
+   "species": "spodoptera_ornithogalli",
+   "name": "Yellow-striped Armyworm Moth",
+   "confidence": 38.22
+  },
+  {
+   "species": "buprestis_langii",
+   "name": "Metallic Wood-boring Beetle",
+   "confidence": 5.26
+  }
+ ],
+ "photo": "20261008-020014-a982.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
