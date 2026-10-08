@@ -1,0 +1,28 @@
+{
+ "id": "20261008-200821-4fe8",
+ "timestamp": "2026-10-08T13:08:21-07:00",
+ "species": "emerald_ash_borer",
+ "name": "Emerald Ash Borer",
+ "scientific": "Emerald Ash Borer",
+ "confidence": 78.64,
+ "top3": [
+  {
+   "species": "emerald_ash_borer",
+   "name": "Emerald Ash Borer",
+   "confidence": 78.64
+  },
+  {
+   "species": "firefly",
+   "name": "Firefly",
+   "confidence": 17.25
+  },
+  {
+   "species": "blister_beetle",
+   "name": "Blister Beetle",
+   "confidence": 1.98
+  }
+ ],
+ "photo": "20261008-200821-4fe8.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
