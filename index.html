@@ -64,8 +64,17 @@
     </div>
   </details>
 
+  <section class="ledger" id="mineSection" hidden>
+    <div class="ledger-head">
+      <h2>Your reports</h2>
+      <span id="mineCount" class="status"></span>
+    </div>
+    <p class="hint">Invasive finds sent from this tab. Tap one to see the whole photo.</p>
+    <div id="mine" class="rows"></div>
+  </section>
+
   <section class="ledger">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+    <div class="ledger-head">
       <h2>Results</h2>
       <span id="count" class="status">0 photos</span>
     </div>
@@ -73,6 +82,12 @@
       <div id="empty" class="empty">No photos yet. Each photo you add appears here with its top match and the next two guesses.</div>
     </div>
   </section>
+</div>
+
+<div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-label="Full photo" hidden>
+  <button id="viewerClose" class="btn close" type="button">Close</button>
+  <img id="viewerImg" alt="">
+  <div id="viewerCaption" class="caption"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.wasm.min.js"></script>

@@ -12,7 +12,7 @@ const INVASIVE = new Set(MODEL.invasive);
 const RESIZE_MODE = MODEL.resize;
 const EXT = /\.(jpe?g|png|bmp|webp|tiff?)$/i;
 const MEAN = [0.485, 0.456, 0.406], STD = [0.229, 0.224, 0.225];
-const TOKEN_KEY = "pyinsect.token", PENDING_KEY = "pyinsect.pending";
+const TOKEN_KEY = "pyinsect.token", PENDING_KEY = "pyinsect.pending", MINE_KEY = "pyinsect.mine";
 
 const $ = id => document.getElementById(id);
 let session = null, queue = Promise.resolve(), total = 0;
@@ -173,8 +173,10 @@ function buildReport(bmp, species, confidence, top3) {
 
 let sending = null;
 const dropPending = id => store.set(PENDING_KEY, store.get(PENDING_KEY, []).filter(p => p.report.id !== id));
-const markReport = (id, text, cls) =>
+const markReport = (id, text, cls) => {
   document.querySelectorAll(`[data-report="${id}"]`).forEach(e => { e.textContent = text; e.className = cls; });
+  updateMine(id, { status: text, ok: cls.includes("ok") });
+};
 
 // Sends every waiting report to the relay, oldest first
 function sendPending() {
@@ -214,17 +216,96 @@ function fileReport(bmp, species, confidence, top3, card) {
   const r = buildReport(bmp, species, confidence, top3);
   line.dataset.report = r.report.id;
   line.textContent = "Sending report…";
+  addMine(r);
   const list = store.get(PENDING_KEY, []);
   list.push(r);
-  if (!store.set(PENDING_KEY, list)) { line.textContent = "Not reported: this browser's storage is full."; line.className = "sent bad"; return; }
+  if (!store.set(PENDING_KEY, list)) { markReport(r.report.id, "Not reported: this browser's storage is full.", "sent bad"); return; }
   sendPending();
 }
+
+// ---------- your reports (this tab) ----------
+// Reports sent from this tab, newest first, kept in sessionStorage so they survive a reload.
+const mine = {
+  get() { try { return JSON.parse(sessionStorage.getItem(MINE_KEY)) || []; } catch { return []; } },
+  set(list) {
+    // Photos are the big part; if storage is full, drop the oldest photos first
+    for (let keep = list.length; keep >= 0; keep--) {
+      try { sessionStorage.setItem(MINE_KEY, JSON.stringify(list.map((m, i) => i < keep ? m : { ...m, photo: null }))); return; } catch {}
+    }
+  },
+};
+
+function addMine({ report, photo }) {
+  const list = mine.get();
+  list.unshift({ id: report.id, name: report.name, scientific: report.scientific || "", confidence: report.confidence,
+    timestamp: report.timestamp, model: report.model, photo, status: "Sending report…", ok: false });
+  mine.set(list.slice(0, 30));
+  renderMine();
+}
+
+function updateMine(id, change) {
+  const list = mine.get(), m = list.find(x => x.id === id);
+  if (!m) return;
+  Object.assign(m, change);
+  mine.set(list);
+  renderMine();
+}
+
+function renderMine() {
+  const list = mine.get(), box = $("mine");
+  $("mineSection").hidden = !list.length;
+  $("mineCount").textContent = `${list.length} report${list.length === 1 ? "" : "s"}`;
+  box.innerHTML = "";
+  for (const m of list) {
+    const row = el("div", "row"), img = el("img"), what = el("div", "what"), side = el("div", "when");
+    img.alt = ""; if (m.photo) img.src = "data:image/jpeg;base64," + m.photo;
+    what.append(el("strong", null, m.name), el("span", "muted", [m.scientific, `${Number(m.confidence).toFixed(1)}%`].filter(Boolean).join(" · ")));
+    const t = new Date(m.timestamp);
+    side.append(el("span", "state " + (m.ok ? "on" : /^Sending/.test(m.status) ? "" : "warn"), m.ok ? "Reported" : m.status),
+      el("span", null, isNaN(t) ? "" : t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })));
+    row.append(img, what, side);
+    if (m.photo) {
+      row.tabIndex = 0; row.setAttribute("role", "button"); row.title = "Show the whole photo";
+      const open = () => openViewer(img.src, m.name, [m.scientific, `${Number(m.confidence).toFixed(1)}%`,
+        isNaN(t) ? "" : t.toLocaleString(), m.ok ? "Reported" : m.status].filter(Boolean).join(" · "));
+      row.onclick = open;
+      row.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
+    }
+    box.append(row);
+  }
+}
+
+// ---------- full-photo viewer ----------
+let viewerReturn = null;
+function openViewer(src, title, details) {
+  viewerReturn = document.activeElement;
+  $("viewerImg").src = src; $("viewerImg").alt = title;
+  const cap = $("viewerCaption"); cap.innerHTML = "";
+  cap.append(el("strong", null, title));
+  if (details) cap.append(el("span", null, details));
+  $("viewer").hidden = false;
+  document.body.style.overflow = "hidden";
+  $("viewerClose").focus();
+}
+function closeViewer() {
+  if ($("viewer").hidden) return;
+  $("viewer").hidden = true;
+  document.body.style.overflow = "";
+  viewerReturn?.focus?.();
+}
+$("viewer").onclick = closeViewer;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeViewer(); });
 
 // ---------- results ----------
 function makeCard(file) {
   $("empty")?.remove();
   const card = el("article", "card pending");
   const img = el("img"); img.alt = ""; img.src = URL.createObjectURL(file);
+  img.tabIndex = 0; img.title = "Show the whole photo";
+  const open = () => openViewer(img.src, card.querySelector(".name").textContent,
+    [card.querySelector(".sci")?.textContent, card.querySelector(".alt .pct")?.textContent, file.webkitRelativePath || file.name].filter(Boolean).join(" · "));
+  img.onclick = open;
+  img.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
   const info = el("div", "info");
   info.append(el("p", "name", "Analysing…"), el("span", "file", file.webkitRelativePath || file.name));
   card.append(img, info);
@@ -383,5 +464,6 @@ $("retryReports").onclick = () => sendPending();
 window.addEventListener("online", () => sendPending());
 
 showReportState();
+renderMine();
 sendPending();
 loadModel();
