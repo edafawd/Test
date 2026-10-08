@@ -1,0 +1,28 @@
+{
+ "id": "20261008-193413-156a",
+ "timestamp": "2026-10-08T12:34:13-07:00",
+ "species": "oriental_beetle",
+ "name": "Oriental Beetle",
+ "scientific": "Oriental Beetle",
+ "confidence": 78.41,
+ "top3": [
+  {
+   "species": "oriental_beetle",
+   "name": "Oriental Beetle",
+   "confidence": 78.41
+  },
+  {
+   "species": "flea_beetle",
+   "name": "Flea Beetle",
+   "confidence": 3.85
+  },
+  {
+   "species": "cereal_leaf_beetle",
+   "name": "Cereal Leaf Beetle",
+   "confidence": 2.95
+  }
+ ],
+ "photo": "20261008-193413-156a.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
