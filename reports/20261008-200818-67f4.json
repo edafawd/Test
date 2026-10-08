@@ -1,0 +1,28 @@
+{
+ "id": "20261008-200818-67f4",
+ "timestamp": "2026-10-08T13:08:18-07:00",
+ "species": "asian_giant_hornet",
+ "name": "Asian Giant Hornet",
+ "scientific": "Asian Giant Hornet",
+ "confidence": 99.99,
+ "top3": [
+  {
+   "species": "asian_giant_hornet",
+   "name": "Asian Giant Hornet",
+   "confidence": 99.99
+  },
+  {
+   "species": "hornet",
+   "name": "Hornet",
+   "confidence": 0.01
+  },
+  {
+   "species": "paper_wasp",
+   "name": "Paper Wasp",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261008-200818-67f4.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
