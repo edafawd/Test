@@ -1,0 +1,28 @@
+{
+ "id": "20261008-193447-c1d5",
+ "timestamp": "2026-10-08T12:34:47-07:00",
+ "species": "emerald_ash_borer",
+ "name": "Emerald Ash Borer",
+ "scientific": "Emerald Ash Borer",
+ "confidence": 40.58,
+ "top3": [
+  {
+   "species": "emerald_ash_borer",
+   "name": "Emerald Ash Borer",
+   "confidence": 40.58
+  },
+  {
+   "species": "click_beetle",
+   "name": "Click Beetle",
+   "confidence": 22.82
+  },
+  {
+   "species": "firefly",
+   "name": "Firefly",
+   "confidence": 19.8
+  }
+ ],
+ "photo": "20261008-193447-c1d5.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
