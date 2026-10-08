@@ -361,10 +361,11 @@ h2 { font-family: var(--display); font-weight: 500; font-size: 19px; margin: 0; 
   .row .when { grid-column: 2; text-align: left; }
 }
 .sci { font-style: italic; font-size: 14px; color: var(--muted); margin-top: -6px; overflow-wrap: anywhere; }
-.hero img, .row { cursor: zoom-in; }
+.hero img, .row { cursor: zoom-in; -webkit-tap-highlight-color: rgba(47, 107, 69, .15); touch-action: manipulation; }
+@media (hover: none) { .hero img, .row, .viewer { cursor: pointer; } }
 .row:hover { background: var(--accent-soft); }
 .row:focus-visible, .hero img:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.viewer { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: rgba(8, 12, 10, .82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: zoom-out; }
+.viewer { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: rgba(8, 12, 10, .82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: zoom-out; }
 .viewer img { display: block; max-width: 100%; max-height: calc(100vh - 150px); object-fit: contain; border-radius: 10px; background: #000; }
 .viewer .caption { max-width: 820px; width: 100%; color: #eef3ef; display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; justify-content: center; text-align: center; font-size: 14px; }
 .viewer .caption strong { font-family: var(--display); font-size: 22px; color: #fff; }
