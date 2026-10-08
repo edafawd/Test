@@ -15,7 +15,7 @@
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">Pyinsect 2.7 · 154 insect classes</span>
+    <span class="eyebrow">Pyinsect 2.8 · 390 insect classes</span>
     <h1>Invasive Species Classifier</h1>
     <span id="status" class="status busy"><span class="dot"></span><span id="statusText">Loading model…</span></span>
   </header>
@@ -76,50 +76,142 @@
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.wasm.min.js"></script>
 <script src="assets/reports.js"></script>
+<script src="assets/species.js"></script>
 <script>
-const MODEL_NAME = "Pyinsect 2.7";
+const MODEL_NAME = "Pyinsect 2.8";
 const MODEL_URL = "model/insect_model.onnx";
 
 // Same lists as main.py
 const CLASS_NAMES = [
-  "emerald_ash_borer_damage", "american_cockroach", "american_lady", "anise_swallowtail",
-  "aphid", "argentine_ant", "army_worm", "asian_giant_hornet", "asian_lady_beetle",
-  "asian_longhorned_beetle", "backswimmer", "bagworm", "bald_faced_hornet", "bark_beetle",
-  "bean_leaf_beetle", "bed_bug", "bee_fly", "black_ant", "black_swallowtail",
-  "blister_beetle", "blow_fly", "booklouse", "boxelder_bug", "brown_banded_cockroach",
-  "brown_lacewing", "brown_marmorated_stink_bug", "bumblebee", "cabbage_white", "caddisfly",
-  "carpenter_ant", "carpenter_bee", "carpet_beetle", "carrion_beetle", "cecropia_moth",
-  "cereal_leaf_beetle", "cicada", "cicada_killer", "clearwing_moth", "click_beetle",
-  "clouded_sulphur", "cockroach", "codling_moth", "colorado_potato_beetle",
-  "comma_butterfly", "common_ringlet", "convergent_lady_beetle", "corn_earworm",
-  "crane_fly", "cricket", "cucumber_beetle", "cutworm", "damsel_bug", "damselfly",
-  "darkling_beetle", "deer_fly", "diamondback_moth", "diving_beetle", "dobsonfly",
-  "douglas_fir_tussock_moth", "dragonfly", "dung_beetle", "earwig", "elm_leaf_beetle",
-  "emerald_ash_borer", "european_paper_wasp", "fall_webworm", "fire_ant", "firebrat",
-  "firefly", "fishfly", "flea_beetle", "flesh_fly", "forest_tent_caterpillar",
-  "formosan_termite", "german_cockroach", "giant_swallowtail", "giant_water_bug",
-  "grasshopper", "green_june_beetle", "green_lacewing", "ground_beetle", "hairstreak",
-  "hangingfly", "harvester_ant", "honey_bee", "hornet", "horse_fly", "house_fly",
-  "hoverfly", "hummingbird_moth", "imperial_moth", "japanese_beetle", "jerusalem_cricket",
-  "katydid", "lace_bug", "lacewing", "ladybug", "leafcutter_bee", "leafhopper",
-  "locust_borer", "luna_moth", "mason_bee", "mayfly", "mealworm", "mealybug",
-  "mexican_bean_beetle", "milkweed_bug", "mole_cricket", "monarch_butterfly", "mosquito",
-  "mourning_cloak", "mud_dauber", "oriental_beetle", "oriental_cockroach", "painted_lady",
-  "paper_wasp", "pavement_ant", "periodical_cicada", "pipevine_swallowtail",
-  "polyphemus_moth", "powderpost_beetle", "praying_mantis", "red_admiral",
-  "rhinoceros_beetle", "rice_weevil", "robber_fly", "rose_chafer", "scale_insect",
-  "scorpionfly", "silver_spotted_skipper", "silverfish", "soldier_beetle", "soldier_fly",
-  "spongy_moth", "spotted_lanternfly", "springtail", "squash_bug", "stag_beetle",
-  "stick_insect", "stink_bug", "stonefly", "swallowtail_butterfly", "sweat_bee",
-  "tachinid_fly", "termite", "thrips", "tiger_beetle", "tiger_moth", "tomato_hornworm",
-  "underwing_moth", "velvet_ant", "water_strider", "weevil", "western_tiger_swallowtail"
+  "achroia_grisella", "actias_luna", "adalia_bipunctata", "adelges_piceae",
+  "adelges_tsugae", "aedes_aegypti", "aedes_albopictus", "aedes_vexans",
+  "agapostemon_femoratus", "agapostemon_texanus", "agapostemon_virescens",
+  "aglais_milberti", "agonum_muelleri", "agrilus_anxius", "agrilus_planipennis",
+  "agrilus_politus", "agrotis_ipsilon", "amara_apricaria", "ammophila_procera",
+  "amorpha_juglandis", "andrena_carlini", "anisandrus_dispar", "anopheles_freeborni",
+  "anopheles_quadrimaculatus", "anoplophora_glabripennis", "anthaxia_prasina",
+  "antheraea_polyphemus", "anthocharis_sara", "anthophora_urbana",
+  "anthrenus_scrophulariae", "anthrenus_verbasci", "apantesis_ornata",
+  "aphodius_fimetarius", "apis_cerana", "apis_mellifera", "argynnis_cybele",
+  "argynnis_hydaspe", "argynnis_zerene", "aspila_molesta", "atlides_halesus",
+  "attagenus_unicolor", "autographa_californica", "automeris_io", "banasa_dimidiata",
+  "battus_philenor", "bembix_americana", "biston_betularia", "blatta_orientalis",
+  "blattella_germanica", "boloria_epithore", "bombus_bifarius", "bombus_californicus",
+  "bombus_impatiens", "bombus_melanopygus", "bombus_mixtus", "bombus_occidentalis",
+  "bombus_sitkensis", "bombus_terrestris", "bombus_vosnesenskii", "brachinus_fumans",
+  "buprestis_adjecta", "buprestis_aurulenta", "buprestis_intricata", "buprestis_langii",
+  "buprestis_subornata", "burnsius_communis", "calliphora_vicina", "callophrys_augustinus",
+  "callophrys_gryneus", "calosoma_cancellatum", "calosoma_scrutator", "calosoma_sycophanta",
+  "camponotus_modoc", "camponotus_novaeboracensis", "camponotus_pennsylvanicus",
+  "camponotus_vicinus", "canthon_pilularius", "carabus_granulatus", "carabus_nemoralis",
+  "catocala_ilia", "catocala_relicta", "catocala_unijuga", "cecropterus_pylades",
+  "celastrina_echo", "ceratina_acantha", "ceratomia_undulosa", "cerceris_fumipennis",
+  "cercyonis_pegala", "cercyonis_sthenele", "chalybion_californicum", "chilocorus_stigma",
+  "chinavia_hilaris", "chlaenius_sericeus", "chloridea_virescens", "chrysis_fuscipennis",
+  "chrysobothris_cyanella", "chrysobothris_viridicyanea", "chrysodeixis_includens",
+  "chrysops_callidus", "cicindela_oregona", "cicindela_repanda", "cicindela_sexguttata",
+  "cicindela_tranquebarica", "cicindelidia_hemorrhagica", "cimex_hemipterus",
+  "cimex_lectularius", "citheronia_regalis", "coccinella_septempunctata",
+  "coccinella_trifasciata", "coenonympha_tullia", "colias_eurytheme", "colias_philodice",
+  "coptotermes_formosanus", "cotinis_mutabilis", "cotinis_nitida", "crambus_praefectellus",
+  "crematogaster_cerasi", "culex_pipiens", "culex_tarsalis", "cycloneda_polita",
+  "cydalima_perspectalis", "cydia_pomonella", "danaus_gilippus", "danaus_plexippus",
+  "dasymutilla_occidentalis", "dasymutilla_sackenii", "dendroctonus_brevicomis",
+  "dendroctonus_ponderosae", "dendroctonus_pseudotsugae", "dendroctonus_rufipennis",
+  "dermestes_lardarius", "dermestes_maculatus", "dicaelus_purpuratus", "dichelonyx_backii",
+  "dichelonyx_linearis", "dolichovespula_arenaria", "dolichovespula_maculata",
+  "dorcus_parallelus", "draeculacephala_crassicornis", "drosophila_melanogaster",
+  "drosophila_suzukii", "dryocoetes_autographus", "dynastes_grantii", "dynastes_tityus",
+  "eacles_imperialis", "eichlinia_cucurbitae", "elaphrus_purpurans", "ennomos_magnaria",
+  "epargyreus_clarus", "ephestia_kuehniella", "erynnis_propertius", "estigmene_acrea",
+  "euchloe_ausonides", "euparthenos_nubilis", "euphydryas_chalcedona", "everes_comyntas",
+  "exochomus_quadripustulatus", "exomala_orientalis", "formica_obscuripes",
+  "formica_podzolica", "formica_rufa", "galerita_janus", "galleria_mellonella",
+  "gastrophysa_cyanea", "geotrupes_stercorarius", "habropoda_laboriosa",
+  "haematopota_pluvialis", "halictus_ligatus", "halyomorpha_halys", "harmonia_axyridis",
+  "harpalus_affinis", "harpalus_pensylvanicus", "helicoverpa_zea", "hemaris_diffinis",
+  "hemaris_thetis", "heraclides_cresphontes", "hippodamia_convergens",
+  "hippodamia_tredecimpunctata", "hofmannophila_pseudospretella", "hyalophora_cecropia",
+  "hyalophora_euryalus", "hylephila_phyleus", "hyles_lineata", "hylobius_pales",
+  "hylobius_warreni", "hyphantria_cunea", "icaricia_icarioides", "incisitermes_minor",
+  "ips_pini", "ips_typographus", "junonia_coenia", "kalotermes_flavicollis",
+  "lacanobia_subjuncta", "lambdina_fiscellaria", "lasioderma_serricorne",
+  "lasioglossum_zephyrus", "lasiommata_petropolitana", "lasius_neoniger", "lasius_niger",
+  "lebia_viridis", "ligyrus_ruginasus", "limenitis_archippus", "limenitis_arthemis",
+  "limenitis_lorquini", "linepithema_humile", "litaneutria_minor", "lon_taxiles",
+  "lucanus_capreolus", "lucanus_elaphus", "lucilia_sericata", "lycorma_delicatula",
+  "lymantria_dispar", "lymantria_monacha", "lytta_cyanipennis", "macrodactylus_subspinosus",
+  "malacosoma_americana", "malacosoma_californica", "malacosoma_disstria",
+  "mamestra_configurata", "manduca_quinquemaculatus", "manduca_sexta", "mantis_religiosa",
+  "megachile_rotundata", "mischocyttarus_flavitarsis", "monobia_quadridens",
+  "monomorium_pharaonis", "musca_domestica", "myrmica_rubra", "nebria_brevicollis",
+  "neophasia_menapia", "nepytia_phantasmaria", "nitidolimonius_resplendens",
+  "noctua_pronuba", "nomia_melanderi", "nylanderia_flavipes", "nymphalis_antiopa",
+  "nymphalis_californica", "ochlodes_sylvanoides", "oeneis_nevadensis", "omus_californicus",
+  "omus_dejeanii", "onthophagus_taurus", "operophtera_brumata", "orgyia_leucostigma",
+  "orgyia_pseudotsugata", "orgyia_vetusta", "orthotomicus_caelatus",
+  "oryzaephilus_surinamensis", "osmia_cornifrons", "osmia_lignaria", "osmoderma_eremicola",
+  "ostrinia_nubilalis", "otiorhynchus_ovatus", "otiorhynchus_sulcatus",
+  "pachysphinx_occidentalis", "paonias_myops", "papilio_eurymedon", "papilio_glaucus",
+  "papilio_polyxenes", "papilio_rutulus", "papilio_troilus", "papilio_zelicaon",
+  "pasimachus_elongatus", "pennisetia_marginatum", "pepsis_thisbe", "peridroma_saucia",
+  "periplaneta_americana", "phaenops_gentilis", "phanaeus_vindex", "philanthus_gibbosus",
+  "phloeosinus_punctatus", "photinus_californicus", "photinus_pyralis",
+  "photuris_lucicrescens", "phryganidia_californica", "phyciodes_cocyta",
+  "phyciodes_mylitta", "phyllophaga_anxia", "pieris_napi", "pieris_rapae",
+  "pissodes_nemorensis", "pissodes_strobi", "platycerus_oregonensis", "platypedia_areolata",
+  "plebejus_melissa", "plodia_interpunctella", "plutella_xylostella",
+  "pogonomyrmex_barbatus", "pogonomyrmex_occidentalis", "polistes_aurifer",
+  "polistes_dominula", "polistes_fuscatus", "polistes_metricus", "polites_peckius",
+  "polydrusus_impressifrons", "polygonia_comma", "polygonia_interrogationis",
+  "polygonia_satyrus", "polygraphus_rufipennis", "polyphylla_crinita",
+  "polyphylla_decemlineata", "pontia_protodice", "popillia_japonica", "prenolepis_imparis",
+  "prionoxystus_robiniae", "promecognathus_laevissimus", "propylea_quatuordecimpunctata",
+  "pseudaletia_unipuncta", "pseudogaurotina_cressoni", "psyllobora_vigintimaculata",
+  "pterostichus_lama", "pterostichus_melanarius", "pyractomena_borealis",
+  "pyrausta_orphisalis", "pyrrharctia_isabella", "reticulitermes_flavipes",
+  "reticulitermes_hesperus", "rhyzopertha_dominica", "sabulodes_aegrotata",
+  "sarcophaga_africa", "satyrium_saepium", "scaphinotus_interruptus",
+  "scarites_subterraneus", "sceliphron_caementarium", "scolytus_multistriatus",
+  "scolytus_ventralis", "serica_sericea", "sinodendron_rugosum", "sitophilus_granarius",
+  "sitophilus_oryzae", "smerinthus_cerisyi", "solenopsis_invicta", "solenopsis_molesta",
+  "sphecius_speciosus", "sphinx_chersis", "sphinx_perelegans", "spilosoma_virginica",
+  "spodoptera_exigua", "spodoptera_frugiperda", "spodoptera_ornithogalli",
+  "stagmomantis_carolina", "stagmomantis_limbata", "stegobium_paniceum",
+  "stomoxys_calcitrans", "strategus_aloeus", "strymon_melinus", "supella_longipalpa",
+  "synanthedon_exitiosa", "synanthedon_scitula", "tabanus_atratus", "tabanus_punctifer",
+  "tapinoma_sessile", "temnoscheila_chlorodia", "tenebrio_molitor", "tenebrio_obscurus",
+  "tenodera_sinensis", "tetracha_virginica", "tetramorium_immigrans", "tharsalea_helloides",
+  "tharsalea_heteronea", "thyridopteryx_ephemeraeformis", "tinea_pellionella",
+  "tineola_bisselliella", "trachykele_blondeli", "tribolium_castaneum",
+  "tribolium_confusum", "trichoplusia_ni", "trogoderma_variabile", "trox_unistriatus",
+  "trypodendron_lineatum", "tyria_jacobaeae", "udea_profundalis", "vanessa_annabella",
+  "vanessa_atalanta", "vanessa_cardui", "vanessa_virginiensis", "vespa_crabro",
+  "vespa_mandarinia", "vespula_germanica", "vespula_maculifrons", "vespula_pensylvanica",
+  "vespula_vulgaris", "xenoglossa_pruinosa", "xyleborus_monographus", "xylocopa_sonorina",
+  "xylocopa_virginica", "xyloryctes_jamaicensis", "zale_lunata", "zeuzera_pyrina",
+  "zootermopsis_angusticollis"
 ];
+// Invasive species (scientific names as the model outputs them). Keep in sync with relay/worker.js
 const INVASIVE = new Set([
-  "ambrosia_beetle", "argentine_ant", "asian_giant_hornet", "asian_lady_beetle",
-  "asian_longhorned_beetle", "balsam_woolly_adelgid", "brown_marmorated_stink_bug",
-  "cabbage_white", "elm_leaf_beetle", "emerald_ash_borer", "european_paper_wasp",
-  "fire_ant", "formosan_termite", "japanese_beetle", "oriental_beetle", "rose_chafer",
-  "spongy_moth", "spotted_lanternfly"
+  "adelges_piceae",            // Balsam Woolly Adelgid
+  "agrilus_planipennis",       // Emerald Ash Borer
+  "anisandrus_dispar",         // European Shothole Borer (ambrosia beetle)
+  "anoplophora_glabripennis",  // Asian Longhorned Beetle
+  "coptotermes_formosanus",    // Formosan Subterranean Termite
+  "exomala_orientalis",        // Oriental Beetle
+  "halyomorpha_halys",         // Brown Marmorated Stink Bug
+  "harmonia_axyridis",         // Asian Lady Beetle
+  "linepithema_humile",        // Argentine Ant
+  "lycorma_delicatula",        // Spotted Lanternfly
+  "lymantria_dispar",          // Spongy Moth
+  "macrodactylus_subspinosus", // Rose Chafer
+  "pieris_rapae",              // Cabbage White
+  "polistes_dominula",         // European Paper Wasp
+  "popillia_japonica",         // Japanese Beetle
+  "solenopsis_invicta",        // Red Imported Fire Ant
+  "vespa_mandarinia",          // Asian Giant Hornet
+  "xyleborus_monographus",     // Mediterranean Oak Borer (ambrosia beetle)
 ]);
 const EXT = /\.(jpe?g|png|bmp|webp|tiff?)$/i;
 const MEAN = [0.485, 0.456, 0.406], STD = [0.229, 0.224, 0.225];
@@ -267,10 +359,10 @@ function buildReport(bmp, species, confidence, top3) {
     + `${sign}${pad(Math.floor(Math.abs(offset) / 60))}:${pad(Math.abs(offset) % 60)}`;
   return {
     report: {
-      id, timestamp: local, species, name: niceName(species),
+      id, timestamp: local, species, name: commonName(species), scientific: sciName(species),
       confidence: Math.round(confidence * 100) / 100,
-      top3: top3.map(t => ({ species: t.species, confidence: Math.round(t.confidence * 100) / 100 })),
-      photo: `${id}.jpg`, model: MODEL_NAME, app_version: "web-1.0",
+      top3: top3.map(t => ({ species: t.species, name: commonName(t.species), confidence: Math.round(t.confidence * 100) / 100 })),
+      photo: `${id}.jpg`, model: MODEL_NAME, app_version: "web-1.1",
     },
     photo: reportPhoto(bmp),
   };
@@ -347,10 +439,10 @@ function fillCard(card, top3) {
   for (const t of top3) {
     const row = el("div", "alt"), track = el("div", "track"), fill = el("div", "fill");
     fill.style.width = `${t.confidence.toFixed(1)}%`; track.append(fill);
-    row.append(el("span", null, niceName(t.species)), track, el("span", "pct", `${t.confidence.toFixed(1)}%`));
+    row.append(el("span", null, commonName(t.species)), track, el("span", "pct", `${t.confidence.toFixed(1)}%`));
     alts.append(row);
   }
-  info.append(el("p", "name", niceName(best.species)), fileLine, alts);
+  info.append(el("p", "name", commonName(best.species)), el("span", "sci", sciName(best.species)), fileLine, alts);
   return invasive;
 }
 

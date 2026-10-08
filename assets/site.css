@@ -117,6 +117,7 @@ input[type=file] { display: none; }
 .card .name { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.15; margin: 0; overflow-wrap: anywhere; }
 .card.invasive .name { color: var(--alert); }
 .card.pending .name { color: var(--muted); }
+.sci { font-style: italic; font-size: 14px; color: var(--muted); margin-top: -4px; overflow-wrap: anywhere; }
 .card .file { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
 .card .sent { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .card .sent.ok { color: var(--accent); }

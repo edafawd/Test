@@ -11,13 +11,19 @@
 //   VIEW_PASSWORD   Secret. Password for the reports page.
 //   VIEW_PATH       Secret. The secret word in the reports page address (letters, digits, - and _).
 
-// Must match INVASIVE in index.html
+// Must match INVASIVE in index.html (scientific names, as Pyinsect 2.8+ outputs them)
 const INVASIVE = new Set([
+  "adelges_piceae", "agrilus_planipennis", "anisandrus_dispar", "anoplophora_glabripennis",
+  "coptotermes_formosanus", "exomala_orientalis", "halyomorpha_halys", "harmonia_axyridis",
+  "linepithema_humile", "lycorma_delicatula", "lymantria_dispar", "macrodactylus_subspinosus",
+  "pieris_rapae", "polistes_dominula", "popillia_japonica", "solenopsis_invicta",
+  "vespa_mandarinia", "xyleborus_monographus",
+  // Older names (Pyinsect 2.7 and before), so reports still waiting on a phone go through
   "ambrosia_beetle", "argentine_ant", "asian_giant_hornet", "asian_lady_beetle",
   "asian_longhorned_beetle", "balsam_woolly_adelgid", "brown_marmorated_stink_bug",
   "cabbage_white", "elm_leaf_beetle", "emerald_ash_borer", "european_paper_wasp",
   "fire_ant", "formosan_termite", "japanese_beetle", "oriental_beetle", "rose_chafer",
-  "spongy_moth", "spotted_lanternfly"
+  "spongy_moth", "spotted_lanternfly",
 ]);
 const MAX_PHOTO_BYTES = 1.5 * 1024 * 1024;
 const MAX_AGE_DAYS = 60;            // reports can wait offline on a phone for a while
@@ -62,7 +68,7 @@ async function submit(request, env) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
   if (request.method === "GET") {
     // Says whether the reports page is set up, never what its address or password is
-    return reply(200, { ok: true, service: "pyinsect-relay", version: 2, reports_page: Boolean(viewWord(env) && env.VIEW_PASSWORD) });
+    return reply(200, { ok: true, service: "pyinsect-relay", version: 3, reports_page: Boolean(viewWord(env) && env.VIEW_PASSWORD) });
   }
   if (request.method !== "POST") return reply(405, { error: "Use POST." });
   const origin = request.headers.get("Origin");
@@ -118,15 +124,21 @@ function checkReport(body) {
   }
 
   const short = (v, n) => typeof v === "string" ? v.slice(0, n) : "";
+  // Display names come from the site; keep them short plain text, else fall back to the id
+  const label = (v, species) => {
+    const t = typeof v === "string" ? v.replace(/[^\p{L}\p{N} '().,-]/gu, "").trim().slice(0, 60) : "";
+    return t || niceName(species);
+  };
   return {
     photo,
     report: {
       id: r.id,
       timestamp: r.timestamp,
       species: r.species,
-      name: niceName(r.species),
+      name: label(r.name, r.species),
+      scientific: label(r.scientific, r.species),
       confidence: r.confidence,
-      top3: r.top3.map(t => ({ species: t.species, confidence: t.confidence })),
+      top3: r.top3.map(t => ({ species: t.species, name: label(t.name, t.species), confidence: t.confidence })),
       photo: `${r.id}.jpg`,
       model: short(r.model, 40),
       app_version: short(r.app_version, 20),
@@ -348,6 +360,7 @@ h2 { font-family: var(--display); font-weight: 500; font-size: 19px; margin: 0; 
   .row img { width: 48px; height: 48px; }
   .row .when { grid-column: 2; text-align: left; }
 }
+.sci { font-style: italic; font-size: 14px; color: var(--muted); margin-top: -6px; overflow-wrap: anywhere; }
 .login { display: flex; flex-direction: column; gap: 10px; max-width: 360px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 .login input[type=password] { font: 15px var(--mono); padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
 .login label { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
@@ -405,6 +418,7 @@ function hero(r) {
   var card = el("article", "hero"), img = el("img"), info = el("div", "info");
   img.alt = "Photo of the reported " + r.name; photo(img, r.id);
   info.append(el("span", "flag", "Invasive"), el("p", "species", r.name || niceName(r.species)));
+  if (r.scientific && r.scientific !== r.name) info.append(el("span", "sci", r.scientific));
   var w = when(r.timestamp), facts = el("dl", "facts");
   [["Reported", w.ago + " · " + w.full], ["Confidence", Number(r.confidence).toFixed(1) + "%"], ["Model", r.model || "—"], ["Report", r.id]]
     .forEach(function (kv) { facts.append(el("dt", null, kv[0]), el("dd", null, kv[1])); });
@@ -415,7 +429,7 @@ function hero(r) {
     r.top3.forEach(function (a) {
       var row = el("div", "alt"), track = el("div", "track"), fill = el("div", "fill");
       fill.style.width = Math.min(100, a.confidence) + "%"; track.append(fill);
-      row.append(el("span", null, niceName(a.species)), track, el("span", "pct", Number(a.confidence).toFixed(0) + "%"));
+      row.append(el("span", null, a.name || niceName(a.species)), track, el("span", "pct", Number(a.confidence).toFixed(0) + "%"));
       alts.append(row);
     });
     info.append(alts);
