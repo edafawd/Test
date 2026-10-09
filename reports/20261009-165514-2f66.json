@@ -1,0 +1,28 @@
+{
+ "id": "20261009-165514-2f66",
+ "timestamp": "2026-10-09T09:55:14-07:00",
+ "species": "vespa_mandarinia",
+ "name": "Asian Giant Hornet",
+ "scientific": "Vespa mandarinia",
+ "confidence": 51.41,
+ "top3": [
+  {
+   "species": "vespa_mandarinia",
+   "name": "Asian Giant Hornet",
+   "confidence": 51.41
+  },
+  {
+   "species": "polistes_fuscatus",
+   "name": "Dark Paper Wasp",
+   "confidence": 13.69
+  },
+  {
+   "species": "andrena_carlini",
+   "name": "Carlin's Mining Bee",
+   "confidence": 10.06
+  }
+ ],
+ "photo": "20261009-165514-2f66.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
