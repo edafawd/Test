@@ -1,0 +1,28 @@
+{
+ "id": "20261009-170847-86a9",
+ "timestamp": "2026-10-09T10:08:47-07:00",
+ "species": "lycorma_delicatula",
+ "name": "Spotted Lanternfly",
+ "scientific": "Lycorma delicatula",
+ "confidence": 16.61,
+ "top3": [
+  {
+   "species": "lycorma_delicatula",
+   "name": "Spotted Lanternfly",
+   "confidence": 16.61
+  },
+  {
+   "species": "cotinis_mutabilis",
+   "name": "Figeater Beetle",
+   "confidence": 13.94
+  },
+  {
+   "species": "tenodera_sinensis",
+   "name": "Chinese Mantis",
+   "confidence": 8.29
+  }
+ ],
+ "photo": "20261009-170847-86a9.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
