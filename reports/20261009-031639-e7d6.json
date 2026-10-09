@@ -1,0 +1,28 @@
+{
+ "id": "20261009-031639-e7d6",
+ "timestamp": "2026-10-08T20:16:39-07:00",
+ "species": "coptotermes_formosanus",
+ "name": "Formosan Subterranean Termite",
+ "scientific": "Coptotermes formosanus",
+ "confidence": 7.36,
+ "top3": [
+  {
+   "species": "coptotermes_formosanus",
+   "name": "Formosan Subterranean Termite",
+   "confidence": 7.36
+  },
+  {
+   "species": "culex_pipiens",
+   "name": "Northern House Mosquito",
+   "confidence": 7.18
+  },
+  {
+   "species": "zootermopsis_angusticollis",
+   "name": "Pacific Dampwood Termite",
+   "confidence": 7.07
+  }
+ ],
+ "photo": "20261009-031639-e7d6.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
