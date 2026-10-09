@@ -1,0 +1,28 @@
+{
+ "id": "20261009-165453-90e2",
+ "timestamp": "2026-10-09T09:54:53-07:00",
+ "species": "popillia_japonica",
+ "name": "Japanese Beetle",
+ "scientific": "Popillia japonica",
+ "confidence": 90.43,
+ "top3": [
+  {
+   "species": "popillia_japonica",
+   "name": "Japanese Beetle",
+   "confidence": 90.43
+  },
+  {
+   "species": "harpalus_affinis",
+   "name": "Ground Beetle",
+   "confidence": 4.41
+  },
+  {
+   "species": "calosoma_sycophanta",
+   "name": "Forest Caterpillar Hunter",
+   "confidence": 2.58
+  }
+ ],
+ "photo": "20261009-165453-90e2.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
