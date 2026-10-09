@@ -1,0 +1,28 @@
+{
+ "id": "20261009-170803-964b",
+ "timestamp": "2026-10-09T10:08:03-07:00",
+ "species": "harmonia_axyridis",
+ "name": "Asian Lady Beetle",
+ "scientific": "Harmonia axyridis",
+ "confidence": 74.75,
+ "top3": [
+  {
+   "species": "harmonia_axyridis",
+   "name": "Asian Lady Beetle",
+   "confidence": 74.75
+  },
+  {
+   "species": "orgyia_vetusta",
+   "name": "Western Tussock Moth",
+   "confidence": 5.26
+  },
+  {
+   "species": "polygonia_satyrus",
+   "name": "Satyr Comma",
+   "confidence": 5.14
+  }
+ ],
+ "photo": "20261009-170803-964b.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
