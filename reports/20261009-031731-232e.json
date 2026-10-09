@@ -1,0 +1,28 @@
+{
+ "id": "20261009-031731-232e",
+ "timestamp": "2026-10-08T20:17:31-07:00",
+ "species": "coptotermes_formosanus",
+ "name": "Formosan Subterranean Termite",
+ "scientific": "Coptotermes formosanus",
+ "confidence": 34.89,
+ "top3": [
+  {
+   "species": "coptotermes_formosanus",
+   "name": "Formosan Subterranean Termite",
+   "confidence": 34.89
+  },
+  {
+   "species": "zootermopsis_angusticollis",
+   "name": "Pacific Dampwood Termite",
+   "confidence": 20.2
+  },
+  {
+   "species": "incisitermes_minor",
+   "name": "Western Drywood Termite",
+   "confidence": 6.77
+  }
+ ],
+ "photo": "20261009-031731-232e.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
