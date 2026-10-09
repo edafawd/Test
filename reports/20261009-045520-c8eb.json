@@ -1,0 +1,28 @@
+{
+ "id": "20261009-045520-c8eb",
+ "timestamp": "2026-10-08T21:55:20-07:00",
+ "species": "agrilus_planipennis",
+ "name": "Emerald Ash Borer",
+ "scientific": "Agrilus planipennis",
+ "confidence": 99.95,
+ "top3": [
+  {
+   "species": "agrilus_planipennis",
+   "name": "Emerald Ash Borer",
+   "confidence": 99.95
+  },
+  {
+   "species": "agrilus_anxius",
+   "name": "Bronze Birch Borer",
+   "confidence": 0.05
+  },
+  {
+   "species": "agrilus_politus",
+   "name": "Jewel Beetle",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261009-045520-c8eb.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
