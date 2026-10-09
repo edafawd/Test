@@ -1,0 +1,28 @@
+{
+ "id": "20261009-033225-7f68",
+ "timestamp": "2026-10-08T20:32:25-07:00",
+ "species": "popillia_japonica",
+ "name": "Japanese Beetle",
+ "scientific": "Popillia japonica",
+ "confidence": 99.96,
+ "top3": [
+  {
+   "species": "popillia_japonica",
+   "name": "Japanese Beetle",
+   "confidence": 99.96
+  },
+  {
+   "species": "phanaeus_vindex",
+   "name": "Rainbow Scarab",
+   "confidence": 0.03
+  },
+  {
+   "species": "exomala_orientalis",
+   "name": "Oriental Beetle",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261009-033225-7f68.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
