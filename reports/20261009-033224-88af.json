@@ -1,0 +1,28 @@
+{
+ "id": "20261009-033224-88af",
+ "timestamp": "2026-10-08T20:32:24-07:00",
+ "species": "popillia_japonica",
+ "name": "Japanese Beetle",
+ "scientific": "Popillia japonica",
+ "confidence": 99.93,
+ "top3": [
+  {
+   "species": "popillia_japonica",
+   "name": "Japanese Beetle",
+   "confidence": 99.93
+  },
+  {
+   "species": "trypodendron_lineatum",
+   "name": "Striped Ambrosia Beetle",
+   "confidence": 0.04
+  },
+  {
+   "species": "aphodius_fimetarius",
+   "name": "Dung Beetle",
+   "confidence": 0.01
+  }
+ ],
+ "photo": "20261009-033224-88af.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
