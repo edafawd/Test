@@ -1,0 +1,28 @@
+{
+ "id": "20261009-031607-5291",
+ "timestamp": "2026-10-08T20:16:07-07:00",
+ "species": "agrilus_planipennis",
+ "name": "Emerald Ash Borer",
+ "scientific": "Agrilus planipennis",
+ "confidence": 22.05,
+ "top3": [
+  {
+   "species": "agrilus_planipennis",
+   "name": "Emerald Ash Borer",
+   "confidence": 22.05
+  },
+  {
+   "species": "tinea_pellionella",
+   "name": "Case-bearing Clothes Moth",
+   "confidence": 15.53
+  },
+  {
+   "species": "photinus_pyralis",
+   "name": "Common Eastern Firefly",
+   "confidence": 11.03
+  }
+ ],
+ "photo": "20261009-031607-5291.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
