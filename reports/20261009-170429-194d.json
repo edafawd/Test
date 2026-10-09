@@ -1,0 +1,28 @@
+{
+ "id": "20261009-170429-194d",
+ "timestamp": "2026-10-09T10:04:29-07:00",
+ "species": "lycorma_delicatula",
+ "name": "Spotted Lanternfly",
+ "scientific": "Lycorma delicatula",
+ "confidence": 98.98,
+ "top3": [
+  {
+   "species": "lycorma_delicatula",
+   "name": "Spotted Lanternfly",
+   "confidence": 98.98
+  },
+  {
+   "species": "tharsalea_helloides",
+   "name": "Purplish Copper",
+   "confidence": 0.47
+  },
+  {
+   "species": "icaricia_icarioides",
+   "name": "Boisduval's Blue",
+   "confidence": 0.24
+  }
+ ],
+ "photo": "20261009-170429-194d.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
