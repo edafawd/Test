@@ -1,0 +1,28 @@
+{
+ "id": "20261009-211543-0af1",
+ "timestamp": "2026-10-09T14:15:43-07:00",
+ "species": "vespa_mandarinia",
+ "name": "Asian Giant Hornet",
+ "scientific": "Vespa mandarinia",
+ "confidence": 99.72,
+ "top3": [
+  {
+   "species": "vespa_mandarinia",
+   "name": "Asian Giant Hornet",
+   "confidence": 99.72
+  },
+  {
+   "species": "vespa_crabro",
+   "name": "European Hornet",
+   "confidence": 0.28
+  },
+  {
+   "species": "polistes_fuscatus",
+   "name": "Dark Paper Wasp",
+   "confidence": 0
+  }
+ ],
+ "photo": "20261009-211543-0af1.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
