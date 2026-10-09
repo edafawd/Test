@@ -1,0 +1,28 @@
+{
+ "id": "20261009-170635-0df6",
+ "timestamp": "2026-10-09T10:06:35-07:00",
+ "species": "popillia_japonica",
+ "name": "Japanese Beetle",
+ "scientific": "Popillia japonica",
+ "confidence": 73.67,
+ "top3": [
+  {
+   "species": "popillia_japonica",
+   "name": "Japanese Beetle",
+   "confidence": 73.67
+  },
+  {
+   "species": "cotinis_mutabilis",
+   "name": "Figeater Beetle",
+   "confidence": 7.42
+  },
+  {
+   "species": "gastrophysa_cyanea",
+   "name": "Green Dock Beetle",
+   "confidence": 5.85
+  }
+ ],
+ "photo": "20261009-170635-0df6.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
