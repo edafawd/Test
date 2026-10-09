@@ -1,0 +1,28 @@
+{
+ "id": "20261009-170536-235a",
+ "timestamp": "2026-10-09T10:05:36-07:00",
+ "species": "lycorma_delicatula",
+ "name": "Spotted Lanternfly",
+ "scientific": "Lycorma delicatula",
+ "confidence": 99.37,
+ "top3": [
+  {
+   "species": "lycorma_delicatula",
+   "name": "Spotted Lanternfly",
+   "confidence": 99.37
+  },
+  {
+   "species": "everes_comyntas",
+   "name": "Eastern Tailed-Blue",
+   "confidence": 0.28
+  },
+  {
+   "species": "polyphylla_decemlineata",
+   "name": "Ten-lined June Beetle",
+   "confidence": 0.06
+  }
+ ],
+ "photo": "20261009-170536-235a.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
