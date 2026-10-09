@@ -1,0 +1,28 @@
+{
+ "id": "20261009-170121-ae35",
+ "timestamp": "2026-10-09T10:01:21-07:00",
+ "species": "agrilus_planipennis",
+ "name": "Emerald Ash Borer",
+ "scientific": "Agrilus planipennis",
+ "confidence": 91.92,
+ "top3": [
+  {
+   "species": "agrilus_planipennis",
+   "name": "Emerald Ash Borer",
+   "confidence": 91.92
+  },
+  {
+   "species": "nitidolimonius_resplendens",
+   "name": "Click Beetle",
+   "confidence": 4.25
+  },
+  {
+   "species": "buprestis_langii",
+   "name": "Metallic Wood-boring Beetle",
+   "confidence": 1.16
+  }
+ ],
+ "photo": "20261009-170121-ae35.jpg",
+ "model": "Pyinsect 2.8",
+ "app_version": "web-1.1"
+}
