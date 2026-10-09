@@ -1,0 +1,28 @@
+{
+ "id": "20261009-031324-1347",
+ "timestamp": "2026-10-08T20:13:24-07:00",
+ "species": "emerald_ash_borer",
+ "name": "Emerald Ash Borer",
+ "scientific": "Emerald Ash Borer",
+ "confidence": 92.96,
+ "top3": [
+  {
+   "species": "emerald_ash_borer",
+   "name": "Emerald Ash Borer",
+   "confidence": 92.96
+  },
+  {
+   "species": "firefly",
+   "name": "Firefly",
+   "confidence": 3.31
+  },
+  {
+   "species": "codling_moth",
+   "name": "Codling Moth",
+   "confidence": 0.67
+  }
+ ],
+ "photo": "20261009-031324-1347.jpg",
+ "model": "Pyinsect 2.7",
+ "app_version": "web-1.1"
+}
