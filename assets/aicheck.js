@@ -78,6 +78,16 @@ async function checkAI(file) {
   };
 }
 
+// The stricter rule (on the AI check test page for now): an upload is only trusted when it carries
+// camera details. Cropping, editing or screenshotting an AI image removes its AI labels, but AI
+// images never had camera details, so those uploads end up here too.
+function reportDecision(result, fromCamera) {
+  if (fromCamera) return { allowed: true, why: "Taken with the site's own camera." };
+  if (result.verdict === "ai") return { allowed: false, why: result.reasons[0] };
+  if (result.verdict === "camera") return { allowed: true, why: "The photo carries camera details." };
+  return { allowed: false, why: "The photo has no camera details. Cropped or edited AI images, screenshots and photos forwarded through messaging apps lose them. Use Take photo, or upload the original photo from your camera." };
+}
+
 function latin1(b) {
   let s = "";
   for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));

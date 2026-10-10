@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../assets/site.css?v=20261010a">
+<link rel="stylesheet" href="../assets/site.css?v=20261010b">
 <style>
 .verdict { align-self: flex-start; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; padding: 3px 10px; border-radius: 999px; color: #fff; }
 .verdict.ai { background: #6b4bb3; }
@@ -34,7 +34,7 @@
   </header>
 
   <section id="tray" class="tray" aria-label="Add photos">
-    <p>Add any photos to see whether the identifier would accept them for a report, or block them as AI-generated. The check looks for the labels AI image tools write into their files.</p>
+    <p>Add any photos to see whether they would be accepted for a report. A photo is accepted when it carries camera details (phone make, model, date taken). It's blocked when it carries AI-generator labels, or when it has no camera details at all, which is what cropped or edited AI images, screenshots and forwarded photos look like.</p>
     <div class="actions">
       <button id="pick" class="btn primary" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
@@ -56,11 +56,12 @@
 
   <section class="limits rows" style="display:block">
     <h2>What this can and can't catch</h2>
-    <p>Blocked: images carrying Content Credentials or an IPTC "made by AI" label (ChatGPT / DALL·E, Adobe Firefly, Microsoft Designer, Google and others add these), images with Stable Diffusion, ComfyUI, InvokeAI or NovelAI settings saved inside, and files naming a generator such as Midjourney in their details.</p>
+    <p>Accepted: photos from the identifier's own <strong>Take photo</strong> button, and uploads that still carry their camera details. Cropping or editing in the phone's gallery usually keeps them.</p>
     <ul>
-      <li>Not caught: an AI image whose labels were removed, for example a screenshot of it or a copy re-saved by some apps. Google's invisible SynthID watermark can't be read here either.</li>
-      <li>Photos taken with the identifier's own <strong>Take photo</strong> button are always accepted: they come straight from the camera.</li>
-      <li>"No AI labels found" is not proof that a photo is real. A photo with camera details (make, model, date taken) is more likely to be genuine.</li>
+      <li>Blocked: images with AI labels (Content Credentials or IPTC "made by AI" from ChatGPT / DALL·E, Adobe Firefly, Microsoft Designer, Google and others; Stable Diffusion, ComfyUI, InvokeAI or NovelAI settings; generator names such as Midjourney).</li>
+      <li>Blocked: uploads with no camera details. This catches AI images that were cropped, edited or screenshotted to remove their labels, but also real photos that lost their details, e.g. ones forwarded through WhatsApp or Messenger, downloaded from the web, or screenshots.</li>
+      <li>Still possible: someone who adds fake camera details with special software. That takes real effort, unlike cropping.</li>
+      <li>For now this stricter rule is only on this test page; the identifier pages still block only AI-labelled photos.</li>
     </ul>
   </section>
 </div>
@@ -71,15 +72,16 @@
   <div id="viewerCaption" class="caption"></div>
 </div>
 
-<script src="../assets/aicheck.js?v=20261010a"></script>
+<script src="../assets/aicheck.js?v=20261010b"></script>
 <script>
 const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const LABEL = {
-  ai: "AI-generated · would be blocked",
+  ai: "AI labels found · would be blocked",
   camera: "Camera photo · would be accepted",
-  unknown: "No AI labels found · would be accepted",
+  unknown: "No camera details · would be blocked",
 };
+const TITLE = { ai: "Looks AI-generated", camera: "Looks like a camera photo", unknown: "Can't tell where it came from" };
 let total = 0;
 
 async function check(file) {
@@ -96,9 +98,12 @@ async function check(file) {
   let r;
   try { r = await checkAI(file); } catch (e) { r = { verdict: "unknown", reasons: [], camera: null, credentials: false, error: e.message }; }
   info.innerHTML = "";
-  card.className = "card" + (r.verdict === "ai" ? " invasive" : "");
-  info.append(el("span", "verdict " + r.verdict, LABEL[r.verdict]), el("p", "name", r.verdict === "ai" ? "Looks AI-generated" : r.verdict === "camera" ? "Looks like a camera photo" : "No AI labels found"), el("span", "file", file.name));
-  if (r.reasons.length) { const ul = el("ul"); r.reasons.forEach(x => ul.append(el("li", null, x))); info.append(ul); }
+  const d = reportDecision(r, false);
+  card.className = "card" + (d.allowed ? "" : " invasive");
+  info.append(el("span", "verdict " + r.verdict, LABEL[r.verdict]), el("p", "name", TITLE[r.verdict]), el("span", "file", file.name));
+  const ul = el("ul");
+  (r.reasons.length ? r.reasons : [d.why]).forEach(x => ul.append(el("li", null, x)));
+  info.append(ul);
   const facts = el("dl", "facts");
   const add = (k, v) => { if (v) facts.append(el("dt", null, k), el("dd", null, v)); };
   add("Camera", r.camera && [r.camera.make, r.camera.model].filter(Boolean).join(" "));
