@@ -223,6 +223,13 @@ function fileReport(bmp, species, confidence, top3, card) {
   sendPending();
 }
 
+// An AI-made photo is never reported; the card says why
+function blockReport(card, ai) {
+  const info = card.querySelector(".info");
+  info.querySelector(".flag")?.after(el("span", "flag ai", "AI-generated photo"));
+  info.append(el("span", "sent bad", "Not reported: this photo looks AI-generated. " + ai.reasons[0]));
+}
+
 // ---------- your reports (this tab) ----------
 // Reports sent from this tab, newest first, kept in sessionStorage so they survive a reload.
 const mine = {
@@ -342,7 +349,12 @@ function classify(file) {
       const probs = softmax(Array.from(out[session.outputNames[0]].data));
       const top3 = [...probs.keys()].sort((a, b) => probs[b] - probs[a]).slice(0, 3)
         .map(i => ({ species: CLASS_NAMES[i] ?? `idx_${i}`, confidence: probs[i] * 100 }));
-      if (fillCard(card, top3)) fileReport(bmp, top3[0].species, top3[0].confidence, top3, card);
+      if (fillCard(card, top3)) {
+        // Photos from the in-page camera come straight from the camera; uploads are checked for AI labels
+        const ai = file.fromCamera ? { verdict: "camera", reasons: [] } : await checkAI(file).catch(() => ({ verdict: "unknown", reasons: [] }));
+        if (ai.verdict === "ai") blockReport(card, ai);
+        else fileReport(bmp, top3[0].species, top3[0].confidence, top3, card);
+      }
       bmp.close?.();
       setStatus(readyText(), "ready");
     } catch (e) {
@@ -433,7 +445,9 @@ function takePhoto() {
     const d = new Date(), pad = n => String(n).padStart(2, "0");
     const name = `camera-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.jpg`;
     closeCamera();
-    classify(new File([blob], name, { type: "image/jpeg" }));
+    const photo = new File([blob], name, { type: "image/jpeg" });
+    photo.fromCamera = true;
+    classify(photo);
     $("cards").scrollIntoView({ behavior: "smooth", block: "start" });
   }, "image/jpeg", 0.92);
 }

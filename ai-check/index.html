@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Photo Check</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="theme-color" content="#2f6b45">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/site.css?v=20261010a">
+<style>
+.verdict { align-self: flex-start; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; padding: 3px 10px; border-radius: 999px; color: #fff; }
+.verdict.ai { background: #6b4bb3; }
+.verdict.camera { background: var(--accent); }
+.verdict.unknown { background: #6b7a70; }
+@media (prefers-color-scheme: dark) { .verdict.ai { background: #b9a2ff; color: #1a1426; } .verdict.camera { color: #0d1411; } }
+.card ul { margin: 0; padding-left: 18px; font-size: 14px; }
+.card .facts { margin-top: 4px; }
+.limits { border-radius: 22px; padding: 16px 20px; }
+.limits p, .limits li { font-size: 14px; color: var(--muted); }
+.limits h2 { margin-bottom: 6px; }
+.limits ul { margin: 6px 0 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <nav><a href="../">Pyinsect 2.8</a><a href="../2.7/">Pyinsect 2.7</a><span class="muted">AI check</span></nav>
+    <span class="eyebrow">Test page · nothing is identified or reported here</span>
+    <h1>AI photo check</h1>
+  </header>
+
+  <section id="tray" class="tray" aria-label="Add photos">
+    <p>Add any photos to see whether the identifier would accept them for a report, or block them as AI-generated. The check looks for the labels AI image tools write into their files.</p>
+    <div class="actions">
+      <button id="pick" class="btn primary" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
+        Select photos
+      </button>
+    </div>
+    <input id="files" type="file" accept="image/*" multiple>
+  </section>
+
+  <section class="ledger">
+    <div class="ledger-head">
+      <h2>Results</h2>
+      <span id="count" class="status">0 photos</span>
+    </div>
+    <div id="cards" class="cards">
+      <div id="empty" class="empty">No photos yet. Try a photo from your phone camera and an image made with an AI tool such as ChatGPT, Gemini or Midjourney.</div>
+    </div>
+  </section>
+
+  <section class="limits rows" style="display:block">
+    <h2>What this can and can't catch</h2>
+    <p>Blocked: images carrying Content Credentials or an IPTC "made by AI" label (ChatGPT / DALL·E, Adobe Firefly, Microsoft Designer, Google and others add these), images with Stable Diffusion, ComfyUI, InvokeAI or NovelAI settings saved inside, and files naming a generator such as Midjourney in their details.</p>
+    <ul>
+      <li>Not caught: an AI image whose labels were removed, for example a screenshot of it or a copy re-saved by some apps. Google's invisible SynthID watermark can't be read here either.</li>
+      <li>Photos taken with the identifier's own <strong>Take photo</strong> button are always accepted: they come straight from the camera.</li>
+      <li>"No AI labels found" is not proof that a photo is real. A photo with camera details (make, model, date taken) is more likely to be genuine.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="viewer" class="viewer" role="dialog" aria-modal="true" aria-label="Full photo" hidden>
+  <button id="viewerClose" class="btn close" type="button">Close</button>
+  <img id="viewerImg" alt="">
+  <div id="viewerCaption" class="caption"></div>
+</div>
+
+<script src="../assets/aicheck.js?v=20261010a"></script>
+<script>
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const LABEL = {
+  ai: "AI-generated · would be blocked",
+  camera: "Camera photo · would be accepted",
+  unknown: "No AI labels found · would be accepted",
+};
+let total = 0;
+
+async function check(file) {
+  $("empty")?.remove();
+  $("count").textContent = `${++total} photo${total === 1 ? "" : "s"}`;
+  const card = el("article", "card"), img = el("img"), info = el("div", "info");
+  img.alt = ""; img.src = URL.createObjectURL(file); img.tabIndex = 0; img.title = "Show the whole photo";
+  img.onclick = () => openViewer(img.src, file.name);
+  img.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openViewer(img.src, file.name); } };
+  info.append(el("p", "name", "Checking…"), el("span", "file", file.name));
+  card.append(img, info);
+  $("cards").prepend(card);
+
+  let r;
+  try { r = await checkAI(file); } catch (e) { r = { verdict: "unknown", reasons: [], camera: null, credentials: false, error: e.message }; }
+  info.innerHTML = "";
+  card.className = "card" + (r.verdict === "ai" ? " invasive" : "");
+  info.append(el("span", "verdict " + r.verdict, LABEL[r.verdict]), el("p", "name", r.verdict === "ai" ? "Looks AI-generated" : r.verdict === "camera" ? "Looks like a camera photo" : "No AI labels found"), el("span", "file", file.name));
+  if (r.reasons.length) { const ul = el("ul"); r.reasons.forEach(x => ul.append(el("li", null, x))); info.append(ul); }
+  const facts = el("dl", "facts");
+  const add = (k, v) => { if (v) facts.append(el("dt", null, k), el("dd", null, v)); };
+  add("Camera", r.camera && [r.camera.make, r.camera.model].filter(Boolean).join(" "));
+  add("Taken", r.camera && r.camera.taken);
+  add("Software", r.camera && r.camera.software);
+  add("Credentials", r.credentials ? "Content Credentials (C2PA) present" : "none");
+  add("File", `${file.type || "unknown type"} · ${(file.size / 1024).toFixed(0)} KB`);
+  if (r.error) add("Error", r.error);
+  info.append(facts);
+}
+
+let viewerReturn = null;
+function openViewer(src, title) {
+  viewerReturn = document.activeElement;
+  $("viewerImg").src = src; $("viewerImg").alt = title;
+  $("viewerCaption").innerHTML = ""; $("viewerCaption").append(el("strong", null, title));
+  $("viewer").hidden = false; document.body.style.overflow = "hidden"; $("viewerClose").focus();
+}
+function closeViewer() {
+  if ($("viewer").hidden) return;
+  $("viewer").hidden = true; document.body.style.overflow = ""; viewerReturn?.focus?.();
+}
+$("viewer").onclick = closeViewer;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeViewer(); });
+
+const handle = list => [...list].filter(f => f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|avif|gif|bmp|tiff?)$/i.test(f.name)).forEach(check);
+$("pick").onclick = () => $("files").click();
+$("files").onchange = e => { handle(e.target.files); e.target.value = ""; };
+const tray = $("tray");
+["dragenter", "dragover"].forEach(t => tray.addEventListener(t, e => { e.preventDefault(); tray.classList.add("drag"); }));
+["dragleave", "drop"].forEach(t => tray.addEventListener(t, e => { e.preventDefault(); tray.classList.remove("drag"); }));
+tray.addEventListener("drop", e => handle(e.dataTransfer.files));
+</script>
+</body>
+</html>
